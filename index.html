@@ -32,13 +32,38 @@
             overflow-x: hidden;
         }
 
+        /* Star Background Styles */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
         /* Header Styles */
         .header {
             padding: 2rem;
             text-align: center;
-            background: var(--darker-bg);
+            background: rgba(5, 6, 8, 0.8);
             border-bottom: 2px solid var(--neon-blue);
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
         .header h1 {
@@ -55,6 +80,8 @@
             gap: 1rem;
             margin: 2rem 0;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         /* Enhanced Button Styles */
@@ -139,6 +166,7 @@
             position: relative;
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         .challenge-card:hover {
@@ -171,32 +199,6 @@
             margin: 1rem 0;
         }
 
-        /* Completed Challenge Styles */
-        .challenge-card.completed {
-            position: relative;
-            opacity: 0.8;
-        }
-
-        .challenge-card.completed::after {
-            content: 'COMPLETED';
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--neon-green);
-            color: var(--darker-bg);
-            padding: 0.3rem 0.8rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            transform: rotate(5deg);
-            box-shadow: 0 0 10px var(--neon-green);
-        }
-
-        .challenge-card.completed .flag-submit {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
         /* Terminal Styles */
         .terminal {
             background: #000;
@@ -218,6 +220,7 @@
             margin-right: 1rem;
             border-radius: 3px;
             transition: all 0.3s ease;
+            width: 250px;
         }
 
         .flag-input:focus {
@@ -232,36 +235,12 @@
             padding: 0.5rem 1rem;
             cursor: pointer;
             border-radius: 3px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: currentColor;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: all 0.4s ease-out;
-            z-index: -1;
+            transition: all 0.3s ease;
         }
 
         .submit-btn:hover {
-            transform: scale(1.05);
             box-shadow: 0 0 10px currentColor;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-        }
-
-        .submit-btn:hover::before {
-            width: 110%;
-            height: 110%;
-            opacity: 0.1;
+            transform: translateY(-1px);
         }
 
         /* Progress Tracker Styles */
@@ -277,43 +256,6 @@
             z-index: 1000;
             backdrop-filter: blur(5px);
             box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--neon-blue);
-        }
-
-        .progress-title {
-            color: var(--neon-blue);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .progress-stats {
-            display: grid;
-            gap: 0.8rem;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-label {
-            color: #fff;
-            opacity: 0.9;
-        }
-
-        .stat-value {
-            color: var(--neon-green);
-            font-weight: bold;
         }
 
         /* Modal Styles */
@@ -356,32 +298,6 @@
             }
         }
 
-        .modal h2 {
-            color: var(--neon-green);
-            margin-bottom: 1rem;
-        }
-
-        .modal p {
-            margin-bottom: 1.5rem;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .points-earned {
-            font-size: 1.5rem;
-            color: var(--neon-green);
-            margin: 1rem 0;
-        }
-
         /* Cyber Grid Background */
         .cyber-grid {
             position: fixed;
@@ -389,7 +305,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2;
             background: 
                 linear-gradient(transparent 0%, rgba(0, 255, 242, 0.1) 2%, transparent 3%),
                 linear-gradient(90deg, transparent 0%, rgba(0, 255, 242, 0.1) 2%, transparent 3%);
@@ -397,62 +313,9 @@
             animation: gridPulse 4s ease-in-out infinite;
         }
 
-        .cyber-grid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, var(--darker-bg) 100%);
-        }
-
         @keyframes gridPulse {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 0.8; }
-        }
-
-        /* Footer Styles */
-        .enhanced-footer {
-            background: var(--darker-bg);
-            padding: 2rem;
-            text-align: center;
-            border-top: 2px solid var(--neon-blue);
-            margin-top: 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .footer-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer-text {
-            color: #fff;
-            opacity: 0.8;
-            font-size: 1rem;
-            letter-spacing: 1px;
-        }
-
-        .footer-glow {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(
-                circle at center,
-                rgba(0, 255, 242, 0.1) 0%,
-                transparent 70%
-            );
-            pointer-events: none;
-            animation: footer-pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes footer-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.1; }
-            50% { transform: scale(1.1); opacity: 0.2; }
         }
 
         /* Responsive Design */
@@ -487,320 +350,456 @@
             }
         }
 
-        /* Hidden Elements */
-        .hidden {
-            display: none;
-        }
-
-        .hex-message {
-            color: transparent;
-            font-size: 1px;
-            user-select: none;
-        }
     </style>
-</head>
-<body>
-    <!-- Web Challenge Flag: CTF{inspector_pro_2024} -->
-    <header class="header">
-        <h1>Code Alpha CTF Platform</h1>
-        <p>Select a category to begin</p>
-    </header>
+    </head>
 
-    <nav class="category-nav">
-        <button class="category-btn" data-category="web">Web Exploitation</button>
-        <button class="category-btn" data-category="forensics">Forensics</button>
-        <button class="category-btn" data-category="reverse">Reverse Engineering</button>
-        <button class="category-btn" data-category="crypto">Cryptography</button>
-    </nav>
+        <!-- Background -->
+        <div class="stars"></div>
+        
 
-    <div class="progress-tracker">
-        <div class="progress-header">
-            <span class="progress-title">Progress</span>
-            <i class="fas fa-shield-alt" style="color: var(--neon-blue)"></i>
-        </div>
-        <div class="progress-stats">
-            <div class="stat-item">
-                <span class="stat-label">Total Points</span>
-                <span class="stat-value" id="progress-points">0</span>
+        <!-- Web Challenge Flag: CTF{inspector_pro_2024} -->
+        <header class="header">
+            <h1>Code Alpha CTF Platform</h1>
+            <p>Select a category to begin</p>
+        </header>
+
+        <nav class="category-nav">
+            <button class="category-btn" data-category="web">Web Exploitation</button>
+            <button class="category-btn" data-category="forensics">Forensics</button>
+            <button class="category-btn" data-category="reverse">Reverse Engineering</button>
+            <button class="category-btn" data-category="crypto">Cryptography</button>
+        </nav>
+
+        <div class="progress-tracker">
+            <div class="progress-header">
+                <span class="progress-title">Progress</span>
+                <i class="fas fa-shield-alt" style="color: var(--neon-blue)"></i>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">Flags Found</span>
-                <span class="stat-value" id="progress-flags">0/8</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Time Elapsed</span>
-                <span class="stat-value" id="progress-time">00:00</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="cyber-grid"></div>
-
-    <div class="modal" id="success-modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">&times;</button>
-            <h2>Congratulations!</h2>
-            <p>You've successfully captured the flag!</p>
-            <div class="points-earned">+<span id="points-value">100</span> Points</div>
-            <p id="modal-message"></p>
-        </div>
-    </div>
-
-    <!-- Web Exploitation Challenges -->
-    <section id="web-challenges" class="challenge-section">
-        <div class="challenge-card web-challenge">
-            <h3>Cookie Monster</h3>
-            <div class="challenge-content">
-                <p>Something delicious is hidden in this page's cookies. Can you find it?</p>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{cookie_hunter_2024}')">Submit</button>
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Points</span>
+                    <span class="stat-value" id="progress-points">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Flags Found</span>
+                    <span class="stat-value" id="progress-flags">0/8</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time Elapsed</span>
+                    <span class="stat-value" id="progress-time">00:00</span>
                 </div>
             </div>
         </div>
 
-        <div class="challenge-card web-challenge">
-            <h3>Hidden in Plain Sight</h3>
-            <div class="challenge-content">
-                <p>The flag is somewhere in this page's source. Use your browser's dev tools wisely.</p>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{inspector_pro_2024}')">Submit</button>
-                </div>
+        <div class="cyber-grid"></div>
+
+        <div class="modal" id="success-modal">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+                <h2>Congratulations!</h2>
+                <p>You've successfully captured the flag!</p>
+                <div class="points-earned">+<span id="points-value">100</span> Points</div>
+                <p id="modal-message"></p>
             </div>
         </div>
 
-        <div class="challenge-card web-challenge">
-            <h3>Local Storage Hunter</h3>
-            <div class="challenge-content">
-                <p>Something interesting is hidden in this page's local storage. Can you find it?</p>
-                <button class="submit-btn" onclick="initLocalStorageChallenge()">Start Challenge</button>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{storage_hunter_2024}')">Submit</button>
+        <!-- Web Exploitation Challenges -->
+        <section id="web-challenges" class="challenge-section">
+            <div class="challenge-card web-challenge">
+                <h3>Cookie Monster</h3>
+                <div class="challenge-content">
+                    <p>Something delicious is hidden in this page's cookies. Can you find it?</p>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{cookie_hunter_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Forensics Challenges -->
-    <section id="forensics-challenges" class="challenge-section">
-        <div class="challenge-card forensics-challenge">
-            <h3>Metadata Mystery</h3>
-            <div class="challenge-content">
-                <p>There's a hidden message in this page's metadata. Tools like 'view-source' might help.</p>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{metadata_master_2024}')">Submit</button>
+            <div class="challenge-card web-challenge">
+                <h3>Hidden in Plain Sight</h3>
+                <div class="challenge-content">
+                    <p>The flag is somewhere in this page's source. Use your browser's dev tools wisely.</p>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{inspector_pro_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="challenge-card forensics-challenge">
-            <h3>Hex Detective</h3>
-            <div class="challenge-content">
-                <p>Converting between different formats can reveal hidden messages.</p>
-                <div class="terminal">
-                    48 65 78 20 69 73 20 66 75 6E 21
-                </div>
-                <span class="hex-message">The flag is: CTF{hex_decoder_2024}</span>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{hex_decoder_2024}')">Submit</button>
+            <div class="challenge-card web-challenge">
+                <h3>Local Storage Hunter</h3>
+                <div class="challenge-content">
+                    <p>Something interesting is hidden in this page's local storage. Can you find it?</p>
+                    <button class="submit-btn" onclick="initLocalStorageChallenge()">Start Challenge</button>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{storage_hunter_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Reverse Engineering Challenges -->
-    <section id="reverse-challenges" class="challenge-section">
-        <div class="challenge-card reverse-challenge">
-            <h3>JavaScript Deobfuscation</h3>
-            <div class="challenge-content">
-                <p>Can you figure out what this obfuscated JavaScript code does?</p>
-                <div class="terminal">
-                    eval(function(p,a,c,k,e,d){e=function(c){return c};if(!''.replace(/^/,String)){while(c--){d[c]=k[c]||c}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('4 3="2{1_0_5}"',6,6,'master|deobfuscation|CTF|flag|const|2024'.split('|'),0,{}))
-                </div>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{deobfuscation_master_2024}')">Submit</button>
+        <!-- Forensics Challenges -->
+        <section id="forensics-challenges" class="challenge-section">
+            <div class="challenge-card forensics-challenge">
+                <h3>Metadata Mystery</h3>
+                <div class="challenge-content">
+                    <p>There's a hidden message in this page's metadata. Tools like 'view-source' might help.</p>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{metadata_master_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="challenge-card reverse-challenge">
-            <h3>Console Explorer</h3>
-            <div class="challenge-content">
-                <p>Check the browser's console. There might be something interesting there.</p>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{console_expert_2024}')">Submit</button>
+            <div class="challenge-card forensics-challenge">
+                <h3>Hex Detective</h3>
+                <div class="challenge-content">
+                    <p>Converting between different formats can reveal hidden messages.</p>
+                    <div class="terminal">
+                        48 65 78 20 69 73 20 66 75 6E 21
+                    </div>
+                    <span class="hex-message">The flag is: CTF{hex_decoder_2024}</span>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{hex_decoder_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- New Cryptography Challenges -->
-    <section id="crypto-challenges" class="challenge-section">
-        <div class="challenge-card crypto-challenge">
-            <h3>Base64 Bonanza</h3>
-            <div class="challenge-content">
-                <p>Decode this message to reveal the hidden flag:</p>
-                <div class="terminal">
-                    Q1RGe2Jhc2U2NF9kZWNvZGVyXzIwMjR9
-                </div>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{base64_decoder_2024}')">Submit</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="challenge-card crypto-challenge">
-            <h3>Cipher Master</h3>
-            <div class="challenge-content">
-                <p>This message was encrypted using a simple substitution cipher:</p>
-                <div class="terminal">
-                    PGS{pvcure_znfgre_2024}
-                </div>
-                <div class="flag-submit">
-                    <input type="text" class="flag-input" placeholder="Enter flag">
-                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{cipher_master_2024}')">Submit</button>
+        <!-- Reverse Engineering Challenges -->
+        <section id="reverse-challenges" class="challenge-section">
+            <div class="challenge-card reverse-challenge">
+                <h3>JavaScript Deobfuscation</h3>
+                <div class="challenge-content">
+                    <p>Can you figure out what this obfuscated JavaScript code does?</p>
+                    <div class="terminal">
+                        eval(function(p,a,c,k,e,d){e=function(c){return c};if(!''.replace(/^/,String)){while(c--){d[c]=k[c]||c}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('4 3="2{1_0_5}"',6,6,'master|deobfuscation|CTF|flag|const|2024'.split('|'),0,{}))
+                    </div>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{deobfuscation_master_2024}')">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <footer class="enhanced-footer">
-        <div class="footer-glow"></div>
-        <div class="footer-content">
-            <p class="footer-text">© 2024 Cyber Mystery Challenge. All Rights Reserved.</p>
-        </div>
-    </footer>
+            <div class="challenge-card reverse-challenge">
+                <h3>Console Explorer</h3>
+                <div class="challenge-content">
+                    <p>Check the browser's console. There might be something interesting there.</p>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{console_expert_2024}')">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <script>
-        // Improved Local Storage challenge
-        function initLocalStorageChallenge() {
-            const encryptedFlag = btoa(btoa('CTF{storage_hunter_2024}')); // Double encoding
-            localStorage.setItem('debug_data', 'Not the flag you are looking for...');
-            localStorage.setItem('user_preferences', JSON.stringify({
-                theme: 'dark',
-                encrypted_data: encryptedFlag
-            }));
-            alert('Challenge initialized! Try investigating the page storage.');
-        }
+        <!-- New Cryptography Challenges -->
+        <section id="crypto-challenges" class="challenge-section">
+            <div class="challenge-card crypto-challenge">
+                <h3>Base64 Bonanza</h3>
+                <div class="challenge-content">
+                    <p>Decode this message to reveal the hidden flag:</p>
+                    <div class="terminal">
+                        Q1RGe2Jhc2U2NF9kZWNvZGVyXzIwMjR9
+                    </div>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{base64_decoder_2024}')">Submit</button>
+                    </div>
+                </div>
+            </div>
 
-        // Set up cookie challenge
-        document.cookie = "flag=CTF{cookie_hunter_2024}; path=/";
+            <div class="challenge-card crypto-challenge">
+                <h3>Cipher Master</h3>
+                <div class="challenge-content">
+                    <p>This message was encrypted using a simple substitution cipher:</p>
+                    <div class="terminal">
+                        PGS{pvcure_znfgre_2024}
+                    </div>
+                    <div class="flag-submit">
+                        <input type="text" class="flag-input" placeholder="Enter flag">
+                        <button class="submit-btn" onclick="checkFlag(this, 'CTF{cipher_master_2024}')">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        // Enhanced game state management
-        const gameState = {
-            points: 0,
-            flagsFound: 0,
-            startTime: new Date(),
-            foundFlags: new Set(),
-            completedChallenges: new Set(),
-            
-            reset() {
-                this.points = 0;
-                this.flagsFound = 0;
-                this.startTime = new Date();
-                this.foundFlags.clear();
-                this.completedChallenges.clear();
-                this.updateDisplay();
-            },
-            
-            updateDisplay() {
-                document.getElementById('progress-points').textContent = this.points;
-                document.getElementById('progress-flags').textContent = `${this.flagsFound}/8`;
-                
-                const elapsed = Math.floor((new Date() - this.startTime) / 1000);
-                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-                const seconds = (elapsed % 60).toString().padStart(2, '0');
-                document.getElementById('progress-time').textContent = `${minutes}:${seconds}`;
-            },
+        <footer class="enhanced-footer">
+            <div class="footer-glow"></div>
+            <div class="footer-content">
+                <p class="footer-text">© 2024 Dulara Abhiranda. All Rights Reserved.</p>
+            </div>
+        </footer>
 
-            markChallengeComplete(flag, challengeCard) {
-                if (!this.foundFlags.has(flag)) {
-                    this.foundFlags.add(flag);
-                    this.completedChallenges.add(challengeCard);
-                    challengeCard.classList.add('completed');
-                    
-                    // Update points and flags
-                    this.points += 100;
-                    this.flagsFound++;
+        <script>
+            // Improved Local Storage challenge
+            function initLocalStorageChallenge() {
+                const encryptedFlag = btoa(btoa('CTF{storage_hunter_2024}')); // Double encoding
+                localStorage.setItem('debug_data', 'Not the flag you are looking for...');
+                localStorage.setItem('user_preferences', JSON.stringify({
+                    theme: 'dark',
+                    encrypted_data: encryptedFlag
+                }));
+                alert('Challenge initialized! Try investigating the page storage.');
+            }
+
+            // Set up cookie challenge
+            document.cookie = "flag=CTF{cookie_hunter_2024}; path=/";
+
+            // Enhanced game state management
+            const gameState = {
+                points: 0,
+                flagsFound: 0,
+                startTime: new Date(),
+                foundFlags: new Set(),
+                completedChallenges: new Set(),
+                timerInterval: null, // To store the timer interval ID
+
+                reset() {
+                    this.points = 0;
+                    this.flagsFound = 0;
+                    this.startTime = new Date();
+                    this.foundFlags.clear();
+                    this.completedChallenges.clear();
                     this.updateDisplay();
-                    
-                    // Show success modal
-                    showSuccessModal(flag, 100);
+                    this.startTimer();
+                },
+
+                updateDisplay() {
+                    document.getElementById('progress-points').textContent = this.points;
+                    document.getElementById('progress-flags').textContent = `${this.flagsFound}/8`;
+                },
+
+                startTimer() {
+                    // Clear any existing interval to avoid multiple timers
+                    if (this.timerInterval) clearInterval(this.timerInterval);
+
+                    this.startTime = new Date(); // Reset start time
+                    this.timerInterval = setInterval(() => {
+                        const elapsed = Math.floor((new Date() - this.startTime) / 1000); // Elapsed time in seconds
+                        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                        const seconds = (elapsed % 60).toString().padStart(2, '0');
+                        document.getElementById('progress-time').textContent = `${minutes}:${seconds}`;
+                    }, 1000); // Update every second
+                },
+
+                stopTimer() {
+                    // Stop the timer when needed
+                    if (this.timerInterval) clearInterval(this.timerInterval);
+                },
+
+                markChallengeComplete(flag, challengeCard) {
+                    if (!this.foundFlags.has(flag)) {
+                        this.foundFlags.add(flag);
+                        this.completedChallenges.add(challengeCard);
+                        challengeCard.classList.add('completed');
+
+                        // Update points and flags
+                        this.points += 100;
+                        this.flagsFound++;
+                        this.updateDisplay();
+
+                        // Show success modal
+                        showSuccessModal(flag, 100);
+
+                        // Stop the timer if all challenges are completed
+                        if (this.flagsFound === 8) {
+                            this.stopTimer();
+                            setTimeout(() => {
+                                alert('Congratulations! You\'ve completed all challenges!');
+                            }, 1000);
+                        }
+                    }
+                }
+            };
+
+
+            // Category navigation
+            function initializeEventListeners() {
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.dataset.category;
+                        document.querySelectorAll('.challenge-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+                        document.getElementById(`${category}-challenges`).classList.add('active');
+                    });
+                });
+            }
+
+            // Enhanced flag checking
+            function checkFlag(button, correctFlag) {
+                const input = button.previousElementSibling;
+                const inputValue = input.value.trim();
+                const challengeCard = button.closest('.challenge-card');
+                
+                if (inputValue === correctFlag) {
+                    if (!gameState.foundFlags.has(correctFlag)) {
+                        gameState.markChallengeComplete(correctFlag, challengeCard);
+                    } else {
+                        alert('You have already completed this challenge!');
+                    }
+                } else {
+                    alert('Incorrect flag. Try again!');
+                }
+                
+                input.value = '';
+            }
+
+            // Success modal handling
+            function showSuccessModal(flag, points) {
+                document.getElementById('points-value').textContent = points;
+                document.getElementById('modal-message').textContent = 
+                    `Keep going! ${8 - gameState.flagsFound} flags remaining.`;
+                document.getElementById('success-modal').classList.add('active');
+
+                if (gameState.flagsFound === 8) {
+                    setTimeout(() => {
+                        alert('Congratulations! You\'ve completed all challenges!');
+                    }, 1000);
                 }
             }
-        };
 
-        // Category navigation
-        function initializeEventListeners() {
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const category = btn.dataset.category;
-                    document.querySelectorAll('.challenge-section').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    document.getElementById(`${category}-challenges`).classList.add('active');
-                });
+            function closeModal() {
+                document.getElementById('success-modal').classList.remove('active');
+            }
+
+            // Console challenge
+            console.log("You found a flag! CTF{console_expert_2024}");
+
+            // Initialize game
+            function initializeGame() {
+                gameState.reset();
+                initializeEventListeners();
+                
+                // Activate Web Exploitation by default
+                document.getElementById('web-challenges').classList.add('active');
+            }
+
+            // Initialize when DOM loads
+            document.addEventListener('DOMContentLoaded', initializeGame);
+
+            // Show error modal for incorrect flags
+            function showErrorModal() {
+            const errorModal = document.createElement('div');
+            errorModal.classList.add('modal', 'active');
+            errorModal.id = 'error-modal';
+
+            // Modal content
+            errorModal.innerHTML = `
+                <div class="modal-content">
+                    <button class="close-modal" onclick="closeErrorModal()">&times;</button>
+                    <h2 style="color: var(--neon-red);">Incorrect Flag!</h2>
+                    <p>Oops, the flag you entered is incorrect. Please try again.</p>
+                </div>
+            `;
+
+            // Add click event listener to close modal when clicking outside
+            errorModal.addEventListener('click', (event) => {
+                // Check if the click is outside the modal content
+                if (event.target === errorModal) {
+                    closeErrorModal();
+                }
+            });
+
+            // Append to body
+            document.body.appendChild(errorModal);
+
+            // Add keyboard support for Escape key
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeErrorModal();
+                }
             });
         }
 
-        // Enhanced flag checking
-        function checkFlag(button, correctFlag) {
-            const input = button.previousElementSibling;
-            const inputValue = input.value.trim();
-            const challengeCard = button.closest('.challenge-card');
-            
-            if (inputValue === correctFlag) {
-                if (!gameState.foundFlags.has(correctFlag)) {
-                    gameState.markChallengeComplete(correctFlag, challengeCard);
-                } else {
-                    alert('You have already completed this challenge!');
+        function closeErrorModal() {
+            const errorModal = document.getElementById('error-modal');
+            if (errorModal) {
+                errorModal.remove();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // Close error modal
+            function closeErrorModal() {
+                const errorModal = document.getElementById('error-modal');
+                if (errorModal) {
+                    errorModal.remove();
                 }
-            } else {
-                alert('Incorrect flag. Try again!');
             }
-            
-            input.value = '';
-        }
 
-        // Success modal handling
-        function showSuccessModal(flag, points) {
-            document.getElementById('points-value').textContent = points;
-            document.getElementById('modal-message').textContent = 
-                `Keep going! ${8 - gameState.flagsFound} flags remaining.`;
-            document.getElementById('success-modal').classList.add('active');
+            // Update the flag checking function
+            function checkFlag(button, correctFlag) {
+                const input = button.previousElementSibling;
+                const inputValue = input.value.trim();
+                const challengeCard = button.closest('.challenge-card');
 
-            if (gameState.flagsFound === 8) {
-                setTimeout(() => {
-                    alert('Congratulations! You\'ve completed all challenges!');
-                }, 1000);
+                if (inputValue === correctFlag) {
+                    if (!gameState.foundFlags.has(correctFlag)) {
+                        gameState.markChallengeComplete(correctFlag, challengeCard);
+                    } else {
+                        alert('You have already completed this challenge!');
+                    }
+                } else {
+                    showErrorModal(); // Show enhanced error popup for incorrect flag
+                }
+
+                input.value = '';
+            }
+
+
+
+            //Backgorund
+
+            function createStars() {
+            const stars = document.querySelector('.stars');
+            const count = 200;
+
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+
+                // Random size between 1-3px
+                const size = Math.random() * 2 + 1;
+
+                // Random duration between 3-7s
+                const duration = Math.random() * 4 + 3;
+
+                star.style.cssText = `
+                    left: ${x}%;
+                    top: ${y}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    --duration: ${duration}s;
+                `;
+
+                stars.appendChild(star);
             }
         }
 
-        function closeModal() {
-            document.getElementById('success-modal').classList.remove('active');
-        }
+        createStars();
 
-        // Console challenge
-        console.log("You found a flag! CTF{console_expert_2024}");
 
-        // Initialize game
-        function initializeGame() {
-            gameState.reset();
-            initializeEventListeners();
-            
-            // Activate Web Exploitation by default
-            document.getElementById('web-challenges').classList.add('active');
-        }
-
-        // Initialize when DOM loads
-        document.addEventListener('DOMContentLoaded', initializeGame);
-    </script>
-</body>
+        </script>
+    </body>
 </html>
