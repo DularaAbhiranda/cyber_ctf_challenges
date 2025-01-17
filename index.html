@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Competition by ALpha</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --neon-blue: #00fff2;
+            --neon-green: #39ff14;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff2d2d;
+            --neon-orange: #ff7f00;
+            --dark-bg: #0a0b1c;
+            --darker-bg: #050608;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            padding: 2rem;
+            text-align: center;
+            background: var(--darker-bg);
+            border-bottom: 2px solid var(--neon-blue);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* Navigation Styles */
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        /* Enhanced Button Styles */
+        .category-btn {
+            background: transparent;
+            border: 2px solid;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+            z-index: 1;
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: currentColor;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 0.4s ease-out;
+            z-index: -1;
+        }
+
+        .category-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px currentColor;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        .category-btn:hover::before {
+            width: 110%;
+            height: 110%;
+            opacity: 0.1;
+        }
+
+        .category-btn[data-category="web"] {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .category-btn[data-category="forensics"] {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .category-btn[data-category="reverse"] {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .category-btn[data-category="crypto"] {
+            border-color: var(--neon-orange);
+            color: var(--neon-orange);
+        }
+
+        /* Challenge Section Styles */
+        .challenge-section {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: none;
+        }
+
+        .challenge-section.active {
+            display: block;
+        }
+
+        /* Challenge Card Styles */
+        .challenge-card {
+            background: rgba(10, 11, 28, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .web-challenge {
+            border-color: var(--neon-blue);
+        }
+
+        .forensics-challenge {
+            border-color: var(--neon-green);
+        }
+
+        .reverse-challenge {
+            border-color: var(--neon-purple);
+        }
+
+        .crypto-challenge {
+            border-color: var(--neon-orange);
+        }
+
+        .challenge-card h3 {
+            margin-bottom: 1rem;
+            color: currentColor;
+        }
+
+        .challenge-content {
+            margin: 1rem 0;
+        }
+
+        /* Completed Challenge Styles */
+        .challenge-card.completed {
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .challenge-card.completed::after {
+            content: 'COMPLETED';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--neon-green);
+            color: var(--darker-bg);
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transform: rotate(5deg);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .challenge-card.completed .flag-submit {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Terminal Styles */
+        .terminal {
+            background: #000;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 1rem 0;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Input and Submit Button Styles */
+        .flag-input {
+            background: transparent;
+            border: 1px solid currentColor;
+            padding: 0.5rem;
+            color: #fff;
+            margin-right: 1rem;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .flag-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .submit-btn {
+            background: transparent;
+            border: 1px solid currentColor;
+            color: currentColor;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: currentColor;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 0.4s ease-out;
+            z-index: -1;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px currentColor;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        .submit-btn:hover::before {
+            width: 110%;
+            height: 110%;
+            opacity: 0.1;
+        }
+
+        /* Progress Tracker Styles */
+        .progress-tracker {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(10, 11, 28, 0.95);
+            border: 2px solid var(--neon-blue);
+            padding: 1.5rem;
+            border-radius: 15px;
+            min-width: 250px;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--neon-blue);
+        }
+
+        .progress-title {
+            color: var(--neon-blue);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-stats {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            color: var(--neon-green);
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--darker-bg);
+            border: 2px solid var(--neon-green);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            position: relative;
+            animation: modal-appear 0.3s ease-out;
+        }
+
+        @keyframes modal-appear {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+        }
+
+        .modal p {
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .points-earned {
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            margin: 1rem 0;
+        }
+
+        /* Cyber Grid Background */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                linear-gradient(transparent 0%, rgba(0, 255, 242, 0.1) 2%, transparent 3%),
+                linear-gradient(90deg, transparent 0%, rgba(0, 255, 242, 0.1) 2%, transparent 3%);
+            background-size: 50px 50px;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        .cyber-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--darker-bg) 100%);
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Footer Styles */
+        .enhanced-footer {
+            background: var(--darker-bg);
+            padding: 2rem;
+            text-align: center;
+            border-top: 2px solid var(--neon-blue);
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            color: #fff;
+            opacity: 0.8;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .footer-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at center,
+                rgba(0, 255, 242, 0.1) 0%,
+                transparent 70%
+            );
+            pointer-events: none;
+            animation: footer-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes footer-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.1); opacity: 0.2; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .challenge-section {
+                padding: 0 1rem;
+            }
+
+            .category-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .progress-tracker {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+                min-width: unset;
+            }
+
+            .flag-input {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+        }
+
+        /* Hidden Elements */
+        .hidden {
+            display: none;
+        }
+
+        .hex-message {
+            color: transparent;
+            font-size: 1px;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Web Challenge Flag: CTF{inspector_pro_2024} -->
+    <header class="header">
+        <h1>Code Alpha CTF Platform</h1>
+        <p>Select a category to begin</p>
+    </header>
+
+    <nav class="category-nav">
+        <button class="category-btn" data-category="web">Web Exploitation</button>
+        <button class="category-btn" data-category="forensics">Forensics</button>
+        <button class="category-btn" data-category="reverse">Reverse Engineering</button>
+        <button class="category-btn" data-category="crypto">Cryptography</button>
+    </nav>
+
+    <div class="progress-tracker">
+        <div class="progress-header">
+            <span class="progress-title">Progress</span>
+            <i class="fas fa-shield-alt" style="color: var(--neon-blue)"></i>
+        </div>
+        <div class="progress-stats">
+            <div class="stat-item">
+                <span class="stat-label">Total Points</span>
+                <span class="stat-value" id="progress-points">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Flags Found</span>
+                <span class="stat-value" id="progress-flags">0/8</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Time Elapsed</span>
+                <span class="stat-value" id="progress-time">00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cyber-grid"></div>
+
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <h2>Congratulations!</h2>
+            <p>You've successfully captured the flag!</p>
+            <div class="points-earned">+<span id="points-value">100</span> Points</div>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <!-- Web Exploitation Challenges -->
+    <section id="web-challenges" class="challenge-section">
+        <div class="challenge-card web-challenge">
+            <h3>Cookie Monster</h3>
+            <div class="challenge-content">
+                <p>Something delicious is hidden in this page's cookies. Can you find it?</p>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{cookie_hunter_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card web-challenge">
+            <h3>Hidden in Plain Sight</h3>
+            <div class="challenge-content">
+                <p>The flag is somewhere in this page's source. Use your browser's dev tools wisely.</p>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{inspector_pro_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card web-challenge">
+            <h3>Local Storage Hunter</h3>
+            <div class="challenge-content">
+                <p>Something interesting is hidden in this page's local storage. Can you find it?</p>
+                <button class="submit-btn" onclick="initLocalStorageChallenge()">Start Challenge</button>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{storage_hunter_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forensics Challenges -->
+    <section id="forensics-challenges" class="challenge-section">
+        <div class="challenge-card forensics-challenge">
+            <h3>Metadata Mystery</h3>
+            <div class="challenge-content">
+                <p>There's a hidden message in this page's metadata. Tools like 'view-source' might help.</p>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{metadata_master_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card forensics-challenge">
+            <h3>Hex Detective</h3>
+            <div class="challenge-content">
+                <p>Converting between different formats can reveal hidden messages.</p>
+                <div class="terminal">
+                    48 65 78 20 69 73 20 66 75 6E 21
+                </div>
+                <span class="hex-message">The flag is: CTF{hex_decoder_2024}</span>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{hex_decoder_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reverse Engineering Challenges -->
+    <section id="reverse-challenges" class="challenge-section">
+        <div class="challenge-card reverse-challenge">
+            <h3>JavaScript Deobfuscation</h3>
+            <div class="challenge-content">
+                <p>Can you figure out what this obfuscated JavaScript code does?</p>
+                <div class="terminal">
+                    eval(function(p,a,c,k,e,d){e=function(c){return c};if(!''.replace(/^/,String)){while(c--){d[c]=k[c]||c}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('4 3="2{1_0_5}"',6,6,'master|deobfuscation|CTF|flag|const|2024'.split('|'),0,{}))
+                </div>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{deobfuscation_master_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card reverse-challenge">
+            <h3>Console Explorer</h3>
+            <div class="challenge-content">
+                <p>Check the browser's console. There might be something interesting there.</p>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{console_expert_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Cryptography Challenges -->
+    <section id="crypto-challenges" class="challenge-section">
+        <div class="challenge-card crypto-challenge">
+            <h3>Base64 Bonanza</h3>
+            <div class="challenge-content">
+                <p>Decode this message to reveal the hidden flag:</p>
+                <div class="terminal">
+                    Q1RGe2Jhc2U2NF9kZWNvZGVyXzIwMjR9
+                </div>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{base64_decoder_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-card crypto-challenge">
+            <h3>Cipher Master</h3>
+            <div class="challenge-content">
+                <p>This message was encrypted using a simple substitution cipher:</p>
+                <div class="terminal">
+                    PGS{pvcure_znfgre_2024}
+                </div>
+                <div class="flag-submit">
+                    <input type="text" class="flag-input" placeholder="Enter flag">
+                    <button class="submit-btn" onclick="checkFlag(this, 'CTF{cipher_master_2024}')">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="enhanced-footer">
+        <div class="footer-glow"></div>
+        <div class="footer-content">
+            <p class="footer-text">© 2024 Cyber Mystery Challenge. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Improved Local Storage challenge
+        function initLocalStorageChallenge() {
+            const encryptedFlag = btoa(btoa('CTF{storage_hunter_2024}')); // Double encoding
+            localStorage.setItem('debug_data', 'Not the flag you are looking for...');
+            localStorage.setItem('user_preferences', JSON.stringify({
+                theme: 'dark',
+                encrypted_data: encryptedFlag
+            }));
+            alert('Challenge initialized! Try investigating the page storage.');
+        }
+
+        // Set up cookie challenge
+        document.cookie = "flag=CTF{cookie_hunter_2024}; path=/";
+
+        // Enhanced game state management
+        const gameState = {
+            points: 0,
+            flagsFound: 0,
+            startTime: new Date(),
+            foundFlags: new Set(),
+            completedChallenges: new Set(),
+            
+            reset() {
+                this.points = 0;
+                this.flagsFound = 0;
+                this.startTime = new Date();
+                this.foundFlags.clear();
+                this.completedChallenges.clear();
+                this.updateDisplay();
+            },
+            
+            updateDisplay() {
+                document.getElementById('progress-points').textContent = this.points;
+                document.getElementById('progress-flags').textContent = `${this.flagsFound}/8`;
+                
+                const elapsed = Math.floor((new Date() - this.startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const seconds = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('progress-time').textContent = `${minutes}:${seconds}`;
+            },
+
+            markChallengeComplete(flag, challengeCard) {
+                if (!this.foundFlags.has(flag)) {
+                    this.foundFlags.add(flag);
+                    this.completedChallenges.add(challengeCard);
+                    challengeCard.classList.add('completed');
+                    
+                    // Update points and flags
+                    this.points += 100;
+                    this.flagsFound++;
+                    this.updateDisplay();
+                    
+                    // Show success modal
+                    showSuccessModal(flag, 100);
+                }
+            }
+        };
+
+        // Category navigation
+        function initializeEventListeners() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const category = btn.dataset.category;
+                    document.querySelectorAll('.challenge-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(`${category}-challenges`).classList.add('active');
+                });
+            });
+        }
+
+        // Enhanced flag checking
+        function checkFlag(button, correctFlag) {
+            const input = button.previousElementSibling;
+            const inputValue = input.value.trim();
+            const challengeCard = button.closest('.challenge-card');
+            
+            if (inputValue === correctFlag) {
+                if (!gameState.foundFlags.has(correctFlag)) {
+                    gameState.markChallengeComplete(correctFlag, challengeCard);
+                } else {
+                    alert('You have already completed this challenge!');
+                }
+            } else {
+                alert('Incorrect flag. Try again!');
+            }
+            
+            input.value = '';
+        }
+
+        // Success modal handling
+        function showSuccessModal(flag, points) {
+            document.getElementById('points-value').textContent = points;
+            document.getElementById('modal-message').textContent = 
+                `Keep going! ${8 - gameState.flagsFound} flags remaining.`;
+            document.getElementById('success-modal').classList.add('active');
+
+            if (gameState.flagsFound === 8) {
+                setTimeout(() => {
+                    alert('Congratulations! You\'ve completed all challenges!');
+                }, 1000);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('success-modal').classList.remove('active');
+        }
+
+        // Console challenge
+        console.log("You found a flag! CTF{console_expert_2024}");
+
+        // Initialize game
+        function initializeGame() {
+            gameState.reset();
+            initializeEventListeners();
+            
+            // Activate Web Exploitation by default
+            document.getElementById('web-challenges').classList.add('active');
+        }
+
+        // Initialize when DOM loads
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    </script>
+</body>
+</html>
